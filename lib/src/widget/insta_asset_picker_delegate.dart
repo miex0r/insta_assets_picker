@@ -406,10 +406,7 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
                 : null,
             child: isLoaded
                 ? Text(
-                    p.isSelectedNotEmpty && !isSingleAssetMode
-                        ? '${textDelegate.confirm}'
-                            ' (${p.selectedAssets.length}/${p.maxAssets})'
-                        : textDelegate.confirm,
+                    textDelegate.confirm,
                   )
                 : _buildLoader(context, 10),
           );
