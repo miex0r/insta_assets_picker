@@ -358,7 +358,7 @@ class InstaAssetPicker {
       gridCount: gridCount,
       pickerTheme: pickerTheme ?? themeData(Theme.of(context).primaryColor),
       locale: Localizations.maybeLocaleOf(context),
-      keepScrollOffset: false,
+      keepScrollOffset: true,
       textDelegate: text,
       loadingIndicatorBuilder: loadingIndicatorBuilder,
       limitedPermissionOverlayPredicate: limitedPermissionOverlayPredicate,
