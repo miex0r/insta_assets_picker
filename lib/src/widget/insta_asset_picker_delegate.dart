@@ -54,7 +54,7 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
   })  : _cropController =
             InstaAssetsCropController(keepScrollOffset, cropDelegate), _videoController = InstaAssetsVideoController(),
         super(
-          shouldRevertGrid: true,
+          shouldRevertGrid: false,
           specialItemPosition: specialItemPosition ?? SpecialItemPosition.none,
         );
 
