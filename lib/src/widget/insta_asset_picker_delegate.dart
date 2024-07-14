@@ -243,10 +243,10 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
     if (notification is ScrollEndNotification) {
       _lastEndScrollOffset = gridScrollController.offset;
       // reduce crop view
-      if (position > reducedPosition && position < _kExtendedCropViewPosition) {
-        _cropViewPosition.value = reducedPosition;
-        return true;
-      }
+      // if (position > reducedPosition && position < _kExtendedCropViewPosition) {
+      //   _cropViewPosition.value = reducedPosition;
+      //   return true;
+      // }
     }
 
     // expand crop view
@@ -267,9 +267,7 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
             cropViewHeight(context) - position &&
         position > reducedPosition) {
       // reduce crop view
-      _cropViewPosition.value = cropViewHeight(context) -
-          (gridScrollController.offset - _lastEndScrollOffset) *
-              _kScrollMultiplier;
+      // _cropViewPosition.value = cropViewHeight(context) - (gridScrollController.offset - _lastEndScrollOffset) * _kScrollMultiplier;
     }
 
     _lastScrollOffset = gridScrollController.offset;
