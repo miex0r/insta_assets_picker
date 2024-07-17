@@ -63,6 +63,29 @@ class InstaAssetPicker {
     builder.viewAsset(context, 0, entity);
   }
 
+  static Future<void> refreshAndSelectEntities(
+    BuildContext context,
+    List<AssetEntity> entities,
+  ) async {
+    if (entities.isEmpty) {
+      return;
+    }
+    final AssetPicker<AssetEntity, AssetPathEntity> picker = context.findAncestorWidgetOfExactType()!;
+    final DefaultAssetPickerBuilderDelegate builder = picker.builder as DefaultAssetPickerBuilderDelegate;
+    final DefaultAssetPickerProvider p = builder.provider;
+    await p.switchPath(
+      PathWrapper<AssetPathEntity>(
+        path: await p.currentPath!.path.obtainForNewProperties(),
+      ),
+    );
+
+    // todo: this is probably doing way too much for all but the last entity
+    // maybe change it so pushToViewer is only called on one of them
+    entities.forEach((entity) {
+      builder.viewAsset(context, 0, entity);
+    });
+  }
+
   /// Request the current [PermissionState] of required permissions.
   ///
   /// Throw an error if permissions are unauthorized.
