@@ -211,7 +211,8 @@ class MediaViewerState extends State<MediaViewer> {
 
               // if no asset is selected yet, returns the loader
               if (previewAsset == null && selected.isEmpty) {
-                return widget.loaderWidget;
+                // return widget.loaderWidget;
+                return SizedBox();
               }
 
               final asset = previewAsset ?? selected[effectiveIndex];

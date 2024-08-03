@@ -402,11 +402,9 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
             onPressed: isLoaded && p.isSelectedNotEmpty
                 ? () => onConfirm(context)
                 : null,
-            child: isLoaded
-                ? Text(
+            child: Text(
                     textDelegate.confirm,
-                  )
-                : _buildLoader(context, 10),
+                  ),
           );
         },
       ),
