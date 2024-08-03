@@ -55,11 +55,13 @@ class InstaAssetPicker {
     final AssetPicker<AssetEntity, AssetPathEntity> picker = context.findAncestorWidgetOfExactType()!;
     final DefaultAssetPickerBuilderDelegate builder = picker.builder as DefaultAssetPickerBuilderDelegate;
     final DefaultAssetPickerProvider p = builder.provider;
-    await p.switchPath(
-      PathWrapper<AssetPathEntity>(
-        path: await p.currentPath?.path.obtainForNewProperties() ?? "",
-      ),
-    );
+    if (p.currentPath != null) {
+      await p.switchPath(
+        PathWrapper<AssetPathEntity>(
+          path: await p.currentPath!.path.obtainForNewProperties(),
+        ),
+      );
+    }
     builder.viewAsset(context, 0, entity);
   }
 
@@ -73,11 +75,13 @@ class InstaAssetPicker {
     final AssetPicker<AssetEntity, AssetPathEntity> picker = context.findAncestorWidgetOfExactType()!;
     final DefaultAssetPickerBuilderDelegate builder = picker.builder as DefaultAssetPickerBuilderDelegate;
     final DefaultAssetPickerProvider p = builder.provider;
-    await p.switchPath(
-      PathWrapper<AssetPathEntity>(
-        path: await p.currentPath?.path.obtainForNewProperties() ?? "",
-      ),
-    );
+    if (p.currentPath != null) {
+      await p.switchPath(
+        PathWrapper<AssetPathEntity>(
+          path: await p.currentPath!.path.obtainForNewProperties(),
+        ),
+      );
+    }
 
     // todo: this is probably doing way too much for all but the last entity
     // maybe change it so pushToViewer is only called on one of them
