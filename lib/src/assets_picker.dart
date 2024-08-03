@@ -57,7 +57,7 @@ class InstaAssetPicker {
     final DefaultAssetPickerProvider p = builder.provider;
     await p.switchPath(
       PathWrapper<AssetPathEntity>(
-        path: await p.currentPath!.path.obtainForNewProperties(),
+        path: await p.currentPath?.path.obtainForNewProperties() ?? "",
       ),
     );
     builder.viewAsset(context, 0, entity);
@@ -75,7 +75,7 @@ class InstaAssetPicker {
     final DefaultAssetPickerProvider p = builder.provider;
     await p.switchPath(
       PathWrapper<AssetPathEntity>(
-        path: await p.currentPath!.path.obtainForNewProperties(),
+        path: await p.currentPath?.path.obtainForNewProperties() ?? "",
       ),
     );
 
