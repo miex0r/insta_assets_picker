@@ -211,6 +211,8 @@ class MediaViewerState extends State<MediaViewer> {
 
               // if no asset is selected yet, returns the loader
               if (previewAsset == null && selected.isEmpty) {
+                // todo: seems like there is a bug with this loading with empty assets, isLoaded never goes to true.
+                // for now i hid the spinners but its still an issue.
                 // return widget.loaderWidget;
                 return SizedBox();
               }
