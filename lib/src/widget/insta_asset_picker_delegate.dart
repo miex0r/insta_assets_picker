@@ -584,8 +584,8 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
   Widget _buildGrid(BuildContext context) {
     return Consumer<DefaultAssetPickerProvider>(
       builder: (BuildContext context, DefaultAssetPickerProvider p, __) {
-        final bool shouldDisplayAssets =
-            p.hasAssetsToDisplay || shouldBuildSpecialItem;
+        final bool shouldDisplayAssets = true;
+        // p.hasAssetsToDisplay || shouldBuildSpecialItem; // or done loading ... ?
         _initializePreviewAsset(p, shouldDisplayAssets);
 
         return AnimatedSwitcher(
