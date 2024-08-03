@@ -55,6 +55,7 @@ class InstaAssetPicker {
     final AssetPicker<AssetEntity, AssetPathEntity> picker = context.findAncestorWidgetOfExactType()!;
     final DefaultAssetPickerBuilderDelegate builder = picker.builder as DefaultAssetPickerBuilderDelegate;
     final DefaultAssetPickerProvider p = builder.provider;
+    // todo: the bug here is if we have 'no assets' any new photo taken by camera will fail to be added to the grid
     if (p.currentPath != null) {
       await p.switchPath(
         PathWrapper<AssetPathEntity>(
