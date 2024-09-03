@@ -393,22 +393,22 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
       valueListenable: _cropController.isCropViewReady,
       builder: (_, isLoaded, __) => Consumer<DefaultAssetPickerProvider>(
         builder: (_, DefaultAssetPickerProvider p, __) {
-          return FilledButton(
-              style: TextButton.styleFrom(
-                backgroundColor: themeColor,
-                foregroundColor: Colors.white,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(0),
-                ),
-              ),
-              onPressed: isLoaded && p.isSelectedNotEmpty
-                  ? () => onConfirm(context)
-                  : null,
-              child: Text(
-                textDelegate.confirm,
-              ));
+          return Container(
+              margin: const EdgeInsets.only(right: 10.0),
+              child: FilledButton(
+                  style: TextButton.styleFrom(
+                    backgroundColor: themeColor,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(0),
+                    ),
+                  ),
+                  onPressed: isLoaded && p.isSelectedNotEmpty
+                      ? () => onConfirm(context)
+                      : null,
+                  child: Text(
+                    textDelegate.confirm,
+                  )));
           /*
           return TextButton(
             style: pickerTheme?.textButtonTheme.style ??
