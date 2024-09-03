@@ -100,7 +100,7 @@ class InstaAssetPicker {
   static Future<PermissionState> _permissionCheck({RequestType requestType = RequestType.common}) => AssetPicker.permissionCheck(
         requestOption: PermissionRequestOption(
           androidPermission: AndroidPermission(
-            type: requestType == RequestType.common ? RequestType.all : requestType,,
+            type: requestType == RequestType.common ? RequestType.all : requestType,
             mediaLocation: false,
           ),
         ),
