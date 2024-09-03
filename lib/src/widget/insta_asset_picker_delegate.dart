@@ -400,7 +400,7 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
                     backgroundColor: themeColor,
                     foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(0),
+                      borderRadius: BorderRadius.circular(6),
                     ),
                   ),
                   onPressed: isLoaded && p.isSelectedNotEmpty
