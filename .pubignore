@@ -8,10 +8,8 @@
 .buildlog/
 .history
 .svn/
-migrate_working_dir/
 .env
 .fvm
-.fvmrc
 
 # IntelliJ related
 *.iml
