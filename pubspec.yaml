@@ -16,7 +16,7 @@ dependencies:
   flutter:
     sdk: flutter
 
-  insta_assets_crop: ^0.0.2 # custom package from image_crop
+  insta_assets_crop: ^0.1.0
   fraction: ^5.0.2 # to show crop ratio in crop view
   wechat_assets_picker: ^9.0.4
   wechat_picker_library: ^1.0.0
