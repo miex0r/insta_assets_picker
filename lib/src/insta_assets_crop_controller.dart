@@ -206,7 +206,7 @@ class InstaAssetsCropController {
         throw 'error file is null';
       }
 
-      if(list[i].asset.type == AssetType.image) {
+      if(list[i].asset.type == AssetType.image && list[i].scale > 0) {
         final scale = list[i].scale;
         final area = list[i].area;
 
