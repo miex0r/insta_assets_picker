@@ -205,7 +205,7 @@ class InstaAssetPicker {
       AssetPicker.permissionCheck(
         requestOption: PermissionRequestOption(
           androidPermission: AndroidPermission(
-            type: requestType ?? RequestType.all,
+            type: requestType ?? RequestType.common,
             mediaLocation: false,
           ),
         ),
@@ -428,7 +428,7 @@ class InstaAssetPicker {
       delegate: builder,
       permissionRequestOption: PermissionRequestOption(
         androidPermission: AndroidPermission(
-          type: requestType == RequestType.common ? RequestType.all : requestType,
+          type: requestType,
           mediaLocation: false,
         ),
       ),
