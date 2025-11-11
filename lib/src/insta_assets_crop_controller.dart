@@ -1,12 +1,9 @@
 import 'dart:io';
 
-import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:fraction/fraction.dart';
 import 'package:insta_assets_crop/insta_assets_crop.dart';
 import 'package:insta_assets_picker/insta_assets_picker.dart';
-import 'package:video_player/video_player.dart';
-import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 /// Uses [InstaAssetsCropSingleton] to keep crop parameters in memory until the picker is disposed
 /// Similar to [Singleton] class from `wechat_assets_picker` package
@@ -17,22 +14,37 @@ class InstaAssetsCropSingleton {
   static List<InstaAssetsCropData> cropParameters = [];
 }
 
+class InstaAssetsExportData {
+  const InstaAssetsExportData({
+    required this.croppedFile,
+    required this.selectedData,
+  });
+
+  /// The cropped file, can be null if the asset is not an image or if the
+  /// exportation was skipped ([skipCropOnComplete]=true)
+  final File? croppedFile;
+
+  /// The selected data, contains the asset and it's crop values
+  final InstaAssetsCropData selectedData;
+}
+
 /// Contains all the parameters of the exportation
 class InstaAssetsExportDetails {
-  /// The list of the cropped files
-  final List<File> croppedFiles;
+  /// The export result, containing the selected assets, crop parameters
+  /// and possible crop file.
+  final List<InstaAssetsExportData> data;
 
-  /// The selected thumbnails, can provided to the picker to preselect those assets
+  /// The selected thumbnails, can be provided to the picker to preselect those assets
   final List<AssetEntity> selectedAssets;
 
-  /// The selected [aspectRatio] (1 or 4/5)
+  /// The selected [aspectRatio]
   final double aspectRatio;
 
   /// The [progress] param represents progress indicator between `0.0` and `1.0`.
   final double progress;
 
   const InstaAssetsExportDetails({
-    required this.croppedFiles,
+    required this.data,
     required this.selectedAssets,
     required this.aspectRatio,
     required this.progress,
@@ -47,6 +59,27 @@ class InstaAssetsCropData {
   // export crop params
   final double scale;
   final Rect? area;
+
+  /// Returns crop filter for ffmpeg in "out_w:out_h:x:y" format
+  String? get ffmpegCrop {
+    final area = this.area;
+    if (area == null) return null;
+
+    final w = area.width * asset.orientatedWidth;
+    final h = area.height * asset.orientatedHeight;
+    final x = area.left * asset.orientatedWidth;
+    final y = area.top * asset.orientatedHeight;
+
+    return '$w:$h:$x:$y';
+  }
+
+  /// Returns scale filter for ffmpeg in "iw*[scale]:ih*[scale]" format
+  String? get ffmpegScale {
+    final scale = cropParam?.scale;
+    if (scale == null) return null;
+
+    return 'iw*$scale:ih*$scale';
+  }
 
   const InstaAssetsCropData({
     required this.asset,
@@ -70,16 +103,18 @@ class InstaAssetsCropData {
 
 /// The controller that handles the exportation and save the state of the selected assets crop parameters
 class InstaAssetsCropController {
-  InstaAssetsCropController(this.keepMemory, this.cropDelegate) : cropRatioIndex = ValueNotifier<int>(0);
+  InstaAssetsCropController(this.keepMemory, this.cropDelegate)
+      : cropRatioIndex = ValueNotifier<int>(0);
 
   /// The index of the selected aspectRatio among the possibilities
   final ValueNotifier<int> cropRatioIndex;
 
-  /// Whether the image in the crop view is loaded
+  /// Whether the asset in the crop view is loaded
   final ValueNotifier<bool> isCropViewReady = ValueNotifier<bool>(false);
 
   /// The asset [AssetEntity] currently displayed in the crop view
-  final ValueNotifier<AssetEntity?> previewAsset = ValueNotifier<AssetEntity?>(null);
+  final ValueNotifier<AssetEntity?> previewAsset =
+      ValueNotifier<AssetEntity?>(null);
 
   /// Options related to crop
   final InstaAssetCropDelegate cropDelegate;
@@ -91,7 +126,7 @@ class InstaAssetsCropController {
   /// is open with [InstaAssetPicker.restorableAssetsPicker]
   final bool keepMemory;
 
-  dispose() {
+  void dispose() {
     clear();
     isCropViewReady.dispose();
     cropRatioIndex.dispose();
@@ -99,7 +134,8 @@ class InstaAssetsCropController {
   }
 
   double get aspectRatio {
-    assert(cropDelegate.cropRatios.isNotEmpty, 'The list of supported crop ratios cannot be empty.');
+    assert(cropDelegate.cropRatios.isNotEmpty,
+        'The list of supported crop ratios cannot be empty.');
     return cropDelegate.cropRatios[cropRatioIndex.value];
   }
 
@@ -160,7 +196,8 @@ class InstaAssetsCropController {
         // if it is not the asset to save and no crop parameter exists
       } else if (savedCropAsset == null) {
         // set empty crop parameters
-        newList.add(InstaAssetsCropData.fromState(asset: asset, cropState: null));
+        newList
+            .add(InstaAssetsCropData.fromState(asset: asset, cropState: null));
       } else {
         // keep existing crop parameters
         newList.add(savedCropAsset);
@@ -182,13 +219,14 @@ class InstaAssetsCropController {
   /// Apply all the crop parameters to the list of [selectedAssets]
   /// and returns the exportation as a [Stream]
   Stream<InstaAssetsExportDetails> exportCropFiles(
-    List<AssetEntity> selectedAssets,
-  ) async* {
-    List<File> croppedFiles = [];
+    List<AssetEntity> selectedAssets, {
+    bool skipCrop = false,
+  }) async* {
+    final List<InstaAssetsExportData> data = [];
 
     /// Returns the [InstaAssetsExportDetails] with given progress value [p]
     InstaAssetsExportDetails makeDetail(double p) => InstaAssetsExportDetails(
-          croppedFiles: croppedFiles,
+          data: data,
           selectedAssets: selectedAssets,
           aspectRatio: aspectRatio,
           progress: p,
@@ -196,19 +234,25 @@ class InstaAssetsCropController {
 
     // start progress
     yield makeDetail(0);
-    final list = cropParameters;
+    final List<InstaAssetsCropData> list = cropParameters;
 
     final step = 1 / list.length;
 
-    for (var i = 0; i < list.length; i++) {
-      final file = await list[i].asset.originFile;
-      if (file == null) {
-        throw 'error file is null';
-      }
+    for (int i = 0; i < list.length; i++) {
+      final asset = list[i].asset;
 
-      if(list[i].asset.type == AssetType.image && list[i].scale > 0) {
+      if (skipCrop || asset.type != AssetType.image) {
+        data.add(
+            InstaAssetsExportData(croppedFile: null, selectedData: list[i]));
+      } else {
+        final file = await asset.originFile;
+
         final scale = list[i].scale;
         final area = list[i].area;
+
+        if (file == null) {
+          throw 'error file is null';
+        }
 
         // makes the sample file to not be too small
         final sampledFile = await InstaAssetsCrop.sampleImage(
@@ -217,17 +261,18 @@ class InstaAssetsCropController {
         );
 
         if (area == null) {
-          croppedFiles.add(sampledFile);
+          data.add(InstaAssetsExportData(
+              croppedFile: sampledFile, selectedData: list[i]));
         } else {
           // crop the file with the area selected
-          final croppedFile = await InstaAssetsCrop.cropImage(file: sampledFile, area: area);
+          final croppedFile =
+              await InstaAssetsCrop.cropImage(file: sampledFile, area: area);
           // delete the not needed sample file
           sampledFile.delete();
 
-          croppedFiles.add(croppedFile);
+          data.add(InstaAssetsExportData(
+              croppedFile: croppedFile, selectedData: list[i]));
         }
-      } else if(list[i].asset.type == AssetType.video) {
-        croppedFiles.add(file);
       }
 
       // increase progress
@@ -238,29 +283,5 @@ class InstaAssetsCropController {
     }
     // complete progress
     yield makeDetail(1);
-  }
-}
-
-/// The controller that handles the video controller to play or stop video
-class InstaAssetsVideoController {
-  ChewieController? chewieController;
-  VideoPlayerController? videoPlayerController;
-
-  Future<void> initialize({required File file}) async {
-    dispose();
-    videoPlayerController = VideoPlayerController.file(file);
-    await videoPlayerController!.initialize();
-    chewieController = ChewieController(videoPlayerController: videoPlayerController!, autoPlay: false, looping: false);
-  }
-
-  void dispose() {
-    if(chewieController != null) {
-      chewieController?.dispose();
-      chewieController = null;
-    }
-    if(videoPlayerController != null) {
-      videoPlayerController?.dispose();
-      videoPlayerController = null;
-    }
   }
 }

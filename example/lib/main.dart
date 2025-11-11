@@ -1,21 +1,21 @@
-import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:insta_assets_picker_demo/pages/stateless_pickers.dart';
 import 'package:insta_assets_picker_demo/pages/camera/camera_picker.dart';
 import 'package:insta_assets_picker_demo/pages/camera/wechat_camera_picker.dart';
 import 'package:insta_assets_picker_demo/pages/restorable_picker.dart';
+import 'package:insta_assets_picker_demo/post_provider.dart';
 import 'package:insta_assets_picker_demo/widgets/insta_picker_interface.dart';
+import 'package:provider/provider.dart';
 
 const kDefaultColor = Colors.deepPurple;
 
-late List<CameraDescription> _cameras;
-
-Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  _cameras = await availableCameras();
-  runApp(const MyApp());
-}
+void main() => runApp(
+      ChangeNotifierProvider(
+        create: (context) => PostProvider(),
+        child: const MyApp(),
+      ),
+    );
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
           seedColor: kDefaultColor,
           brightness: Brightness.dark,
         ),
-        cardTheme: const CardTheme(
+        cardTheme: const CardThemeData(
           elevation: 2,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(8)),
@@ -53,6 +53,7 @@ class MyApp extends StatelessWidget {
         GlobalMaterialLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
+      supportedLocales: const [Locale('en')],
     );
   }
 }
@@ -66,7 +67,7 @@ class PickersScreen extends StatelessWidget {
       const SinglePicker(),
       const MultiplePicker(),
       const RestorablePicker(),
-      CameraPicker(camera: _cameras.first),
+      const CameraPicker(),
       const WeChatCameraPicker(),
     ];
 

@@ -4,8 +4,6 @@ PODS:
   - Flutter (1.0.0)
   - insta_assets_crop (0.0.1):
     - Flutter
-  - package_info_plus (0.4.5):
-    - Flutter
   - path_provider_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
@@ -17,19 +15,15 @@ PODS:
   - video_player_avfoundation (0.0.1):
     - Flutter
     - FlutterMacOS
-  - wakelock_plus (0.0.1):
-    - Flutter
 
 DEPENDENCIES:
   - camera_avfoundation (from `.symlinks/plugins/camera_avfoundation/ios`)
   - Flutter (from `Flutter`)
   - insta_assets_crop (from `.symlinks/plugins/insta_assets_crop/ios`)
-  - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
   - photo_manager (from `.symlinks/plugins/photo_manager/ios`)
   - sensors_plus (from `.symlinks/plugins/sensors_plus/ios`)
   - video_player_avfoundation (from `.symlinks/plugins/video_player_avfoundation/darwin`)
-  - wakelock_plus (from `.symlinks/plugins/wakelock_plus/ios`)
 
 EXTERNAL SOURCES:
   camera_avfoundation:
@@ -38,8 +32,6 @@ EXTERNAL SOURCES:
     :path: Flutter
   insta_assets_crop:
     :path: ".symlinks/plugins/insta_assets_crop/ios"
-  package_info_plus:
-    :path: ".symlinks/plugins/package_info_plus/ios"
   path_provider_foundation:
     :path: ".symlinks/plugins/path_provider_foundation/darwin"
   photo_manager:
@@ -48,20 +40,16 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/sensors_plus/ios"
   video_player_avfoundation:
     :path: ".symlinks/plugins/video_player_avfoundation/darwin"
-  wakelock_plus:
-    :path: ".symlinks/plugins/wakelock_plus/ios"
 
 SPEC CHECKSUMS:
-  camera_avfoundation: dd002b0330f4981e1bbcb46ae9b62829237459a4
-  Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
-  insta_assets_crop: 46c0be4cbfe48cff466b6924ec93b77f656ebaa8
-  package_info_plus: 58f0028419748fad15bf008b270aaa8e54380b1c
-  path_provider_foundation: 2b6b4c569c0fb62ec74538f866245ac84301af46
-  photo_manager: ff695c7a1dd5bc379974953a2b5c0a293f7c4c8a
-  sensors_plus: 18a9b346c43e157da17d2c8e99def703f9efb9d8
-  video_player_avfoundation: 7c6c11d8470e1675df7397027218274b6d2360b3
-  wakelock_plus: 78ec7c5b202cab7761af8e2b2b3d0671be6c4ae1
+  camera_avfoundation: 04b44aeb14070126c6529e5ab82cc7c9fca107cf
+  Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
+  insta_assets_crop: 960856014dc16c08c92b02caf56d197fdea56051
+  path_provider_foundation: 080d55be775b7414fd5a5ef3ac137b97b097e564
+  photo_manager: d2fbcc0f2d82458700ee6256a15018210a81d413
+  sensors_plus: 3c3bac724a2128c895623e03efd82cf0e94fd8e8
+  video_player_avfoundation: 2cef49524dd1f16c5300b9cd6efd9611ce03639b
 
 PODFILE CHECKSUM: e4638883b73f42d1731a85e8757b8cd858a2954c
 
-COCOAPODS: 1.15.2
+COCOAPODS: 1.16.2
