@@ -156,12 +156,43 @@ class InstaAssetPicker {
     final DefaultAssetPickerBuilderDelegate builder =
         picker.builder as DefaultAssetPickerBuilderDelegate;
     final DefaultAssetPickerProvider p = builder.provider;
-    await p.switchPath(
-      PathWrapper<AssetPathEntity>(
-        path: await p.currentPath!.path.obtainForNewProperties(),
-      ),
-    );
+    
+    // todo: the bug here is if we have 'no assets' any new photo taken by camera will fail to be added to the grid
+    if (p.currentPath != null) {
+      await p.switchPath(
+        PathWrapper<AssetPathEntity>(
+          path: await p.currentPath!.path.obtainForNewProperties(),
+        ),
+      );
+    }
     builder.viewAsset(context, 0, entity);
+  }
+
+  static Future<void> refreshAndSelectEntities(
+    BuildContext context,
+    List<AssetEntity> entities,
+  ) async {
+    if (entities.isEmpty) {
+      return;
+    }
+    final AssetPicker<AssetEntity, AssetPathEntity> picker = context.findAncestorWidgetOfExactType()!;
+    final DefaultAssetPickerBuilderDelegate builder = picker.builder as DefaultAssetPickerBuilderDelegate;
+    final DefaultAssetPickerProvider p = builder.provider;
+
+    // todo: the bug here is if we have 'no assets' any new photo taken by camera will fail to be added to the grid
+    if (p.currentPath != null) {
+      await p.switchPath(
+        PathWrapper<AssetPathEntity>(
+          path: await p.currentPath!.path.obtainForNewProperties(),
+        ),
+      );
+    }
+
+    // todo: this is probably doing way too much for all but the last entity
+    // maybe change it so pushToViewer is only called on one of them
+    entities.forEach((entity) {
+      builder.viewAsset(context, 0, entity);
+    });
   }
 
   /// Request the current [PermissionState] of required permissions.
@@ -174,7 +205,7 @@ class InstaAssetPicker {
       AssetPicker.permissionCheck(
         requestOption: PermissionRequestOption(
           androidPermission: AndroidPermission(
-            type: requestType ?? RequestType.common,
+            type: requestType ?? RequestType.all,
             mediaLocation: false,
           ),
         ),
@@ -397,7 +428,7 @@ class InstaAssetPicker {
       delegate: builder,
       permissionRequestOption: PermissionRequestOption(
         androidPermission: AndroidPermission(
-          type: requestType,
+          type: requestType == RequestType.common ? RequestType.all : requestType,
           mediaLocation: false,
         ),
       ),

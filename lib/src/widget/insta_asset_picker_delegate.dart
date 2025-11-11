@@ -255,10 +255,10 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
     if (notification is ScrollEndNotification) {
       _lastEndScrollOffset = gridScrollController.offset;
       // reduce crop view
-      if (position > reducedPosition && position < _kExtendedCropViewPosition) {
-        _cropViewPosition.value = reducedPosition;
-        return true;
-      }
+      // if (position > reducedPosition && position < _kExtendedCropViewPosition) {
+      //   _cropViewPosition.value = reducedPosition;
+      //   return true;
+      // }
     }
 
     // expand crop view
@@ -279,9 +279,9 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
             cropViewHeight(context) - position &&
         position > reducedPosition) {
       // reduce crop view
-      _cropViewPosition.value = cropViewHeight(context) -
-          (gridScrollController.offset - _lastEndScrollOffset) *
-              _kScrollMultiplier;
+      // _cropViewPosition.value = cropViewHeight(context) -
+      //     (gridScrollController.offset - _lastEndScrollOffset) *
+      //         _kScrollMultiplier;
     }
 
     _lastScrollOffset = gridScrollController.offset;
@@ -407,24 +407,35 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
       valueListenable: _cropController.isCropViewReady,
       builder: (_, isLoaded, __) => Consumer<DefaultAssetPickerProvider>(
         builder: (_, DefaultAssetPickerProvider p, __) {
-          return TextButton(
-            style: pickerTheme?.textButtonTheme.style ??
-                TextButton.styleFrom(
-                  foregroundColor: themeColor,
-                  disabledForegroundColor: theme.dividerColor,
-                ),
-            onPressed: isLoaded && p.isSelectedNotEmpty
-                ? () => onConfirm(context)
-                : null,
-            child: isLoaded
-                ? Text(
-                    p.isSelectedNotEmpty && !isSingleAssetMode
-                        ? '${textDelegate.confirm}'
-                            ' (${p.selectedAssets.length}/${p.maxAssets})'
-                        : textDelegate.confirm,
-                  )
-                : _buildLoader(context, 10),
-          );
+          return Container(
+              margin: const EdgeInsets.only(right: 10.0),
+              child: FilledButton(
+                  style: TextButton.styleFrom(
+                    backgroundColor: themeColor,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                  ),
+                  onPressed: isLoaded && p.isSelectedNotEmpty
+                      ? () => onConfirm(context)
+                      : null,
+                  child: Text(
+                    textDelegate.confirm,
+                  )));
+          // return TextButton(
+          //   style: pickerTheme?.textButtonTheme.style ??
+          //       TextButton.styleFrom(
+          //         foregroundColor: themeColor,
+          //         disabledForegroundColor: theme.dividerColor,
+          //       ),
+          //   onPressed: isLoaded && p.isSelectedNotEmpty
+          //       ? () => onConfirm(context)
+          //       : null,
+          //   child: Text(
+          //           textDelegate.confirm
+          //         ),
+          // );
         },
       ),
     );
@@ -600,8 +611,8 @@ class InstaAssetPickerBuilder extends DefaultAssetPickerBuilderDelegate {
   Widget _buildGrid(BuildContext context) {
     return Consumer<DefaultAssetPickerProvider>(
       builder: (BuildContext context, DefaultAssetPickerProvider p, __) {
-        final bool shouldDisplayAssets =
-            p.hasAssetsToDisplay || shouldBuildSpecialItem;
+        final bool shouldDisplayAssets = true;
+        // p.hasAssetsToDisplay || shouldBuildSpecialItem; // or done loading ... ?
         _initializePreviewAsset(p, shouldDisplayAssets);
 
         return AnimatedSwitcher(

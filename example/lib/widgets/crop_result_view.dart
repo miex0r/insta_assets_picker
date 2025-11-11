@@ -94,7 +94,7 @@ class CropResultView extends StatelessWidget {
                       ? Image.file(data[index]!.croppedFile!)
                       : PickerResultPreview(
                           cropData: data[index]!.selectedData,
-                          isAutoPlay: index == 0,
+                          isAutoPlay: false, // index == 0,
                         ),
                 ),
               );
